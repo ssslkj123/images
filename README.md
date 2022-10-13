@@ -1,1 +1,1 @@
-# images
+# 该仓库用于编写Dockerfile构建dockerhub上的镜像
