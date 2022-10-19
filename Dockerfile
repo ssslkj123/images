@@ -20,7 +20,8 @@ RUN sed -e 's|^mirrorlist=|#mirrorlist=|g' \
 RUN yum install -y tmux net-tools qperf iperf3 vim wget lrzsz tree screen lsof tcpdump nmap telnet dos2unix unix2dos bash-completion OpenIPMI-tools sysstat iptraf ntp zlib-devel ncurses-devel openssl openssh-serve openssl-devel mysql-devel mysql supervisor git redis gcc gcc-c++ golang htop iperf iftop iproute less unzip zip tcpdump nmap yum-util nfs-utils iotop java-1.8.0-openjdk && yum clean all
 #RUN yum install -y net-tools vim wget lrzsz tree screen lsof tcpdump nmap telnet dos2unix unix2dos bash-completion OpenIPMI-tools sysstat iptraf ntp zlib-devel ncurses-devel openssl openssh-serve openssl-devel mysql-devel mysql supervisor git redis gcc gcc-c++ golang htop iperf iftop less unzip zip tcpdump nmap yum-util nfs-utils iotop java-1.8.0-openjdk  &>/dev/null && yum clean all
 # 拷贝启动脚本
-COPY ["tini-amd64-0.19.0","docker-entrypoint.sh","check_pod_health.sh","/" ]
+COPY ["tini-amd64-0.19.0","/tini" ]
+COPY ["docker-entrypoint.sh","check_pod_health.sh","/" ]
 # 启动镜像默认运行挂起脚本
 #CMD [ "/check_pod_health.sh" ]
 #ENTRYPOINT [ "/bin/bash", "-c","/docker-entrypoint.sh &", "/bin/bash", "-c", " /check_pod_health.sh &" ]
