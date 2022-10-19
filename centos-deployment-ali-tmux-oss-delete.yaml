@@ -1,0 +1,71 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: centos-deployment-ali-tmux-oss-del
+  namespace: p-6czkl-pipeline
+  labels:
+    app: centos
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: centos
+  template:
+    metadata:
+      labels:
+        app: centos
+      #annotations:
+        #eks.tke.cloud.tencent.com/cpu-type: 'amd' # 表示优先创建 amd 资源 Pod，如果所选地域可用区 amd 资源不足，则会创建 intel 资源 Pod
+        #eks.tke.cloud.tencent.com/cpu: '2'
+        #eks.tke.cloud.tencent.com/mem: '4Gi' # 内存一定要以 Gi 为单位，以 G 为单位则会报参数错误
+        #eks.tke.cloud.tencent.com/log-collector: "ilogtail"
+        #eks.tke.cloud.tencent.com/ilogtail-config-name: "ilogtail-config"
+        #eks.tke.cloud.tencent.com/hot-reload-config: "true"
+    spec:
+      containers:
+      #- command:
+      #  - /bin/bash
+      #- args:
+      #  - -c
+      #  - "echo Hi !  $ENV_KEY1 and $ENV_KEY2 and $DOCKER_NAME  && tail -f /dev/null"
+      - name: centos-by-kid
+        image: ssslkj123/centos7_toolbox:20221013_v6
+        imagePullPolicy: Always
+        #image: centos:centos7.9.2009
+        # https://kubernetes.io/zh-cn/docs/tasks/inject-data-application/environment-variable-expose-pod-information/  环境变量注册
+        env:
+        - name: ENV_KEY1
+          value: value1
+        - name: ENV_KEY2
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.labels['app']
+              #fieldPath: metadata.annotations['eks.tke.cloud.tencent.com/cpu-type']
+        - name: DOCKER_NAME
+          value: centos-deployment-ali-tmux-oss-del
+          #valueFrom:
+            #resourceFieldRef:
+              #containerName: centos-by-kid
+              #resource: requests.cpu
+            #fieldRef:
+              #fieldPath: metadata.name
+        ports:
+        - containerPort: 80
+        resources:
+          limits:
+            cpu: 8
+            memory: 4096Mi
+          requests:
+            cpu: 100m
+            memory: 100Mi
+        volumeMounts:
+        - mountPath: /data/logs
+          name: data
+          subPathExpr: test-k8s/$(DOCKER_NAME)
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: nas
+          #claimName: test-pre-nas-pvc

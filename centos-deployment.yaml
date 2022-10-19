@@ -1,0 +1,69 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: centos-deployment
+  namespace: default
+  labels:
+    app: centos
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: centos
+  template:
+    metadata:
+      labels:
+        app: centos
+      annotations:
+        #eks.tke.cloud.tencent.com/cpu-type: 'amd' # 表示优先创建 amd 资源 Pod，如果所选地域可用区 amd 资源不足，则会创建 intel 资源 Pod
+        #eks.tke.cloud.tencent.com/cpu: '2'
+        #eks.tke.cloud.tencent.com/mem: '4Gi' # 内存一定要以 Gi 为单位，以 G 为单位则会报参数错误
+        #eks.tke.cloud.tencent.com/eip-attributes: '{"InternetMaxBandwidthOut":200, "InternetChargeType":"TRAFFIC_POSTPAID_BY_HOUR"}' 
+# 值可以为空串，表示启用 EIP 并使用默认配置；也可以用创建 EIP 接口的 json 参数，详细参数列表参考 https://cloud.tencent.com/document/api/215/16699#2.-.E8.BE.93.E5.85.A5.E5.8F.82.E6.95.B0，本例中的参数表示 EIP 是按量付费，且带宽上限为 50M。
+    spec:
+      containers:
+      - command:
+        - /bin/bash
+        args:
+        - -c
+        - "echo Hi !  $ENV_KEY1 and $ENV_KEY2 and $DOCKER_NAME  && tail -f /dev/null"
+        command:
+        - /bin/bash
+        name: centos-by-kid
+        image: centos:centos7.9.2009
+        # https://kubernetes.io/zh-cn/docs/tasks/inject-data-application/environment-variable-expose-pod-information/  环境变量注册
+        env:
+        - name: ENV_KEY1
+          value: value1
+        - name: ENV_KEY2
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.labels['app']
+              #fieldPath: metadata.annotations['eks.tke.cloud.tencent.com/cpu-type']
+        - name: DOCKER_NAME
+          value: centos-deployment
+          #valueFrom:
+            #resourceFieldRef:
+              #containerName: centos-by-kid
+              #resource: requests.cpu
+            #fieldRef:
+              #fieldPath: metadata.name
+        ports:
+        - containerPort: 80
+        resources:
+          limits:
+            cpu: 4
+            memory: 4096Mi
+          requests:
+            cpu: 500m
+            memory: 1024Mi
+        #volumeMounts:
+        #- mountPath: /data/logs
+        #  name: data
+        #  subPathExpr: test-k8s/$(DOCKER_NAME)
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      #volumes:
+      #- name: data
+      #  persistentVolumeClaim:
+      #    claimName: test-pre-nas-pvc

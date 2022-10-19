@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: test-pre-nas-pv
+  labels:
+    alicloud-pvname: test-pre-nas-pv
+spec:
+  accessModes:
+  - ReadWriteMany
+  capacity:
+    storage: 10Pi
+  mountOptions:
+  - vers=3
+  - nolock,tcp,noresvport
+  nfs:
+    path: /
+    # 测试
+    server: 085b849537-hbk33.cn-hangzhou.nas.aliyuncs.com
+    # 生产
+    #server: 000984b386-ung5.cn-hangzhou.nas.aliyuncs.com
+  persistentVolumeReclaimPolicy: Retain
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: test-pre-nas-pvc
+  namespace: default
+spec:
+  storageClassName: ""
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 10Pi
+  selector:
+    matchLabels:
+      alicloud-pvname: test-pre-nas-pv
