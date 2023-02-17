@@ -29,7 +29,7 @@ spec:
       #  - -c
       #  - "echo Hi !  $ENV_KEY1 and $ENV_KEY2 and $DOCKER_NAME  && tail -f /dev/null"
       - name: centos-by-kid
-        image: ssslkj123/centos7_toolbox:20221013_v6
+        image: ssslkj123/centos7_toolbox:v1.2
         imagePullPolicy: Always
         #image: centos:centos7.9.2009
         # https://kubernetes.io/zh-cn/docs/tasks/inject-data-application/environment-variable-expose-pod-information/  环境变量注册
