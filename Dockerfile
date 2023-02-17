@@ -17,7 +17,7 @@ RUN sed -e 's|^mirrorlist=|#mirrorlist=|g' \
         -i.bak \
         /etc/yum.repos.d/CentOS-*.repo
 # 安装基础的工具链
-RUN yum install -y tmux net-tools qperf iperf3 vim wget lrzsz tree screen lsof tcpdump nmap telnet dos2unix unix2dos bash-completion OpenIPMI-tools sysstat iptraf ntp zlib-devel ncurses-devel openssl openssh-serve openssl-devel mysql-devel mysql supervisor git redis gcc gcc-c++ golang htop iperf iftop iproute less unzip zip tcpdump nmap yum-util nfs-utils iotop java-1.8.0-openjdk && yum clean all
+RUN yum install -y tmux net-tools qperf iperf3 vim wget lrzsz tree screen lsof tcpdump nmap telnet dos2unix unix2dos bash-completion OpenIPMI-tools sysstat iptraf ntp zlib-devel ncurses-devel openssl openssh-serve openssl-devel mysql-devel mysql supervisor git redis gcc gcc-c++ golang htop iperf iftop iproute less unzip zip tcpdump nmap yum-util nfs-utils iotop java-1.8.0-openjdk fio && yum clean all
 #RUN yum install -y net-tools vim wget lrzsz tree screen lsof tcpdump nmap telnet dos2unix unix2dos bash-completion OpenIPMI-tools sysstat iptraf ntp zlib-devel ncurses-devel openssl openssh-serve openssl-devel mysql-devel mysql supervisor git redis gcc gcc-c++ golang htop iperf iftop less unzip zip tcpdump nmap yum-util nfs-utils iotop java-1.8.0-openjdk  &>/dev/null && yum clean all
 # 拷贝启动脚本
 COPY ["tini-amd64-0.19.0","/tini" ]
